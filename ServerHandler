@@ -1,0 +1,96 @@
+import java.io.*;
+import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class ServerHandler extends Thread{
+	private Socket consocket=null;
+	private final String string1="HELO ";
+	private final String string2="KILL_SERVICE";
+	private String infromClient=null;
+	private InetAddress IPaddress;
+	private int port;
+	private String studentID;
+	private String state="true";
+	
+	
+
+	public InetAddress getIPaddress() {
+		return IPaddress;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public String getStudentID() {
+		return studentID;
+	}
+
+	public ServerHandler(Socket consocket) {
+		super();
+		this.consocket = consocket;
+		this.port=consocket.getLocalPort();
+		this.IPaddress=
+consocket.getLocalAddress();
+		
+		this.studentID="17301984";
+		System.out.println("<"+this.getName()+"> running");
+		start();
+	}
+
+	
+	public void run() {
+		BufferedReader fromClient=null;
+		PrintWriter outToClient=null;
+		try {
+			fromClient=new BufferedReader(new InputStreamReader(consocket.getInputStream()));
+                        outToClient=new PrintWriter(consocket.getOutputStream(),true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while(true){
+			try {
+			infromClient=fromClient.readLine();
+			String message1=null;
+			/*
+			 * 'z' is appended to indicate the end of the reply message  
+			 */
+			//helo message
+		if(infromClient.startsWith(string1)){
+                    message1= infromClient+"\nIP:"+IPaddress.getHostAddress()+"\nPort:"+port+"\nStudentID:"+studentID;
+                        outToClient.println(message1);
+		}else if(infromClient.equals(string2)){//KIll
+			message1="TEMINATE";
+			outToClient.print(message1);
+			System.out.print("Server connection TEMINATED by "+this.getName());
+			System.exit(-1);
+			break;
+		}else{//default message
+			message1="Default message:FAULT INPUT!DO NOT PROCESS OTHER MESSAGE.";
+			outToClient.println(message1);
+		}
+			} catch (IOException e) {
+				System.err.print("read or write error");
+				e.printStackTrace();
+			}
+			
+		finally{
+                            try {
+                                fromClient.close();
+                                outToClient.close();
+                                consocket.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(ServerHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+		
+		
+	}
+
+			
+			
+	
+
+        }
+}
