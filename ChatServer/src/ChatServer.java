@@ -10,9 +10,10 @@ import java.nio.charset.CharsetDecoder;
 import java.util.Iterator;
 
 public class ChatServer {
-
+	
+    // A selector let program know which socket is active.
     private Selector selector;
-
+    //converting messages
     private ByteBuffer byteBuffer;
 
     private Charset charset;
@@ -22,7 +23,8 @@ public class ChatServer {
     private String serverIP;
 
     private String serverPort;
-
+	
+    // Use ChatService to manage users.
     private ChatService chatService;
 
     public ChatServer(int port) throws IOException {
@@ -33,6 +35,7 @@ public class ChatServer {
 
         decoder = charset.newDecoder();
 
+	// Create server socket.
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
 
         selector = Selector.open();
@@ -43,13 +46,16 @@ public class ChatServer {
 
         serverPort = String.valueOf(serverSocketChannel.socket().getLocalPort());
 
+	// Set server socket non-blocking.
         serverSocketChannel.configureBlocking(false);
 
+	// Add server socket to selector, then socket.accept() won't block the thread.
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
         chatService = new ChatService();
     }
 
+    // Once chat server starts, loops until receive "KILL_SERVICE" signal.
     public void loop() throws IOException
     {
         String processedInfo;
@@ -58,7 +64,7 @@ public class ChatServer {
 
         while(!stopFlag)
         {
-
+            // In each loop, let select tell program which client is active.
             selector.select();
 
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
@@ -87,7 +93,7 @@ public class ChatServer {
 
         Iterator<SelectionKey> iterator = selector.keys().iterator();
 
-
+        // Close all socket before shutdown the server.
         while(iterator.hasNext())
         {
             SelectionKey key = iterator.next();
@@ -112,7 +118,7 @@ public class ChatServer {
         selector.close();
     }
 
-  
+    // Process command from client.
     public String process(SelectionKey key) throws IOException {
 
         byteBuffer.clear();
