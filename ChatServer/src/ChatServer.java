@@ -171,9 +171,9 @@ public class ChatServer {
 
         String echoMsg = "", returnMsg = "";
 
-        if(msg.equals("HELO text"))
+        if(msg.equals("HELO BASE_TEST"))
         {
-            echoMsg += "HELO text\nIP:";
+            echoMsg += "HELO BASE_TEST\nIP:";
             echoMsg += channel.socket().getInetAddress().toString().substring(1);
             echoMsg += "\nPort:";
             echoMsg += channel.socket().getPort();
