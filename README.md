@@ -12,3 +12,6 @@
 1. The ChatServer can not shut down by the given Chat Server Test, you should use `telnet <Server IP> <Server Port>` and then input `KILL_SERVICE` to force the Server to shutdown, thus the test could be forced to end.
 1. Execute `./start_client.sh <Server IP> <Server port>` to run client.
 1. The ChatClient hasn't `KILL_SERVICE` command. Users can use `telnet <Server IP> <Server Port>` and then input `KILL_SERVICE` to see the result.
+
+### Test result
+- Grade: 73 = round( (75 / 75) * 20 + (1275 / 1755) * 70 + (5 / 25) * 10)
