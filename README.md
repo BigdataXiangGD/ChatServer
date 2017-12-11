@@ -1,3 +1,5 @@
+###Guidong Xiang 17301984
+
 ### Server
 - ChatServer.java: multiplex IO service, can response to any client socket any time with non-blocking IO.
 - ChatService.java: A Class for managing chat rooms. Decoupling handler codes from IO-relative codes.
